@@ -6,7 +6,7 @@ that would otherwise be dropped because of crossing overlaps on the same
 
 It keeps properly nested slices on the same track, snaps tiny timestamp-boundary
 crossings, and moves genuine overlaps to synthetic lanes with collision-free
-thread ids.
+thread ids. Open the rewritten trace in [Perfetto](https://ui.perfetto.dev).
 
 ## Install
 
