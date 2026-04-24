@@ -8,6 +8,10 @@ It keeps properly nested slices on the same track, snaps tiny timestamp-boundary
 crossings, and moves genuine overlaps to synthetic lanes with collision-free
 thread ids. Open the rewritten trace in [Perfetto](https://ui.perfetto.dev).
 
+Perfetto requires slices on the same `(pid, tid)` track to be disjoint or
+strictly nested. Crossing slices are dropped with
+`SLICE_DROP_OVERLAPPING_COMPLETE_EVENT`.
+
 ## Install
 
 ```bash
@@ -75,6 +79,23 @@ snapped slices (9):
 rewrote 5 flow endpoint(s) onto rewritten slice starts/lanes
 wrote trace_fixed.json: 988 slices, 1 new lanes
 ```
+
+## How It Works
+
+`trace-lanefix` resolves crossings with minimal visual disturbance:
+
+1. It places slices with nesting awareness. Each lane keeps a live stack of open
+   slices, and nested children stay on their parent's lane.
+2. It snaps tiny crossings instead of creating a new lane. End-snap clamps a
+   child end to its parent end; start-snap pushes a slice start to the previous
+   boundary. The smaller shift wins, as long as it is below the configured snap
+   threshold.
+3. It applies the same pass to every track. GPU streams keep the same lane
+   behavior as simple non-nested timelines, while CPU threads can preserve real
+   nesting.
+4. It creates collision-free synthetic lane ids. Numeric tids use
+   `tid * 1000 + lane` when available, and fall back to string ids if that would
+   collide with a real track.
 
 ## Python API
 

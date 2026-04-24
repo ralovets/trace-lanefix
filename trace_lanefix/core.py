@@ -1,38 +1,4 @@
-"""Rewrite a Chrome/Kineto trace so Perfetto can render every slice.
-
-Perfetto's slice model requires strict stack nesting per (pid, tid): two
-slices on the same track must be disjoint or one must fully contain the
-other. Slices that *cross* a boundary get dropped
-(SLICE_DROP_OVERLAPPING_COMPLETE_EVENT).
-
-Strategy — resolve crossings with the minimum visual disturbance:
-
-1. Nesting-aware placement. Each lane keeps a live stack of open frames.
-   An event joins a lane if, after popping closed frames, the lane is
-   empty or the current top strictly contains the event. Nested children
-   stay on their parent's lane.
-
-2. Snap tiny crossings instead of spawning a lane. Two directions are
-   considered for every crossing, and the smaller perturbation wins:
-     - end-snap: clamp the child's end down to its parent's end (nests).
-     - start-snap: push the child's start forward to its parent's end
-       (turns it into a disjoint sibling).
-   The smallest shift is the one that actually represents CUPTI/Kineto
-   timestamp noise; end-snap fits float-epsilon parent-end overruns,
-   start-snap fits the typical GPU-stream case where two kernels appear
-   to overlap by ~100ns at the boundary even though they're back-to-back
-   on the stream. Only shifts below the configured snap threshold are applied, so
-   genuine concurrent slices (ProfilerStep#N, kernels on separate streams
-   sharing a track) still go to a secondary lane.
-
-3. No category gate. Every track runs through the same pass. GPU streams
-   behave identically to the old algorithm (no nesting ⇒ same lane
-   decisions) and CPU threads no longer explode.
-
-4. Collision-free lane ids. Synthetic tids keep the historical numeric
-   `tid * 1000 + lane` form when that id is available, and fall back to a
-   string id when it would collide with a real track.
-"""
+"""Rewrite Chrome/Kineto traces so Perfetto can render crossing slices."""
 
 import json
 from collections import defaultdict
