@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "trace-lanefix"
+version = "0.1.0"
+description = "Fix overlapping Chrome/Kineto trace slices so Perfetto can render them."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [
+  {name = "Roman Ralovets"},
+]
+keywords = ["chrome-trace", "kineto", "perfetto", "profiling", "pytorch"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Software Development :: Debuggers",
+  "Topic :: System :: Benchmark",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[project.urls]
+Repository = "https://github.com/ralovets/trace-lanefix"
+Issues = "https://github.com/ralovets/trace-lanefix/issues"
+
+[project.scripts]
+trace-lanefix = "trace_lanefix.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["trace_lanefix*"]
