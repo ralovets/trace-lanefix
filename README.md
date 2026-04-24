@@ -47,6 +47,11 @@ threshold:
 trace-lanefix --snap-threshold-us 2.5 input.json output.fixed.json
 ```
 
+The default threshold is calibrated against CUPTI boundary noise between
+consecutive same-stream kernels. In the sample trace, observed noise was below
+about `2.5us`; kernels on one CUDA stream cannot physically overlap, so a small
+sub-threshold overlap is treated as timing noise.
+
 Example output:
 
 This run shows the two repair paths: tiny sub-5.0us timestamp crossings are

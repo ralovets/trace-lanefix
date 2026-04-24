@@ -3,10 +3,7 @@
 import json
 from collections import defaultdict
 
-SNAP_THRESHOLD_US = 5.0  # absolute shift below which we clamp instead of laning.
-# Calibrated against CUPTI boundary noise between consecutive same-stream kernels
-# (observed max ~2.5us on nvjet tensor-core kernels). Kernels on one CUDA stream
-# cannot physically overlap, so any sub-threshold overlap is timing noise.
+SNAP_THRESHOLD_US = 5.0
 
 
 def _format_us(value: float) -> str:
