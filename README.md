@@ -8,6 +8,12 @@ It keeps properly nested slices on the same track, snaps tiny timestamp-boundary
 crossings, and moves genuine overlaps to synthetic lanes with collision-free
 thread ids.
 
+## Install
+
+```bash
+pip install trace-lanefix
+```
+
 ## Before / After
 
 Before:
